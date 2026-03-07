@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: gsrs-backend
+    runtime: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
