@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
 
                         // Departments - any authenticated user can read
-                        .requestMatchers(HttpMethod.GET, "/api/departments").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/departments").permitAll()
                         .requestMatchers("/api/departments/**").hasRole("ADMIN")
 
                         // Admin dashboard
