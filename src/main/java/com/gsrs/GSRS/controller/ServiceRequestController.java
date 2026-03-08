@@ -33,10 +33,13 @@ public class ServiceRequestController {
 
     @GetMapping
     public ResponseEntity<Page<ServiceRequestResponseDTO>> getAllRequests(
+            Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+        UUID callerId = (UUID) authentication.getCredentials();
+        String callerRole = authentication.getAuthorities().iterator().next().getAuthority();
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return ResponseEntity.ok(serviceRequestService.getAllRequests(pageable));
+        return ResponseEntity.ok(serviceRequestService.getAllRequests(callerId, callerRole, pageable));
     }
 
     @GetMapping("/citizen/{citizenId}")

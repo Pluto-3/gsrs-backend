@@ -29,6 +29,10 @@ public class User {
     @Column(nullable = false)
     private String role; // CITIZEN, ADMIN, DEPARTMENT_STAFF
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     @CreationTimestamp
     private Instant createdAt;
 }

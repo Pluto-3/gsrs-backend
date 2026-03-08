@@ -7,9 +7,9 @@ import com.gsrs.GSRS.config.JwtUtil;
 import com.gsrs.GSRS.dto.request.LoginRequestDTO;
 import com.gsrs.GSRS.dto.request.RegisterRequestDTO;
 import com.gsrs.GSRS.dto.response.AuthResponseDTO;
+import com.gsrs.GSRS.entity.Department;
 import com.gsrs.GSRS.entity.User;
-import com.gsrs.GSRS.exception.BadRequestException;
-import com.gsrs.GSRS.exception.ResourceNotFoundException;
+import com.gsrs.GSRS.repository.DepartmentRepository;
 import com.gsrs.GSRS.repository.UserRepository;
 import com.gsrs.GSRS.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -30,11 +31,21 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Email already registered");
         }
 
+        Department department = null;
+        if ("DEPARTMENT_STAFF".equals(dto.getRole())) {
+            if (dto.getDepartmentId() == null) {
+                throw new BadRequestException("Department is required for staff registration");
+            }
+            department = departmentRepository.findById(dto.getDepartmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
+        }
+
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .role(dto.getRole())
+                .department(department)
                 .build();
 
         User saved = userRepository.save(user);

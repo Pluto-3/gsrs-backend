@@ -8,13 +8,13 @@ import com.gsrs.GSRS.entity.Department;
 import com.gsrs.GSRS.entity.ServiceRequest;
 import com.gsrs.GSRS.entity.User;
 import com.gsrs.GSRS.enums.RequestStatus;
-import com.gsrs.GSRS.exception.ResourceNotFoundException;
 import com.gsrs.GSRS.repository.DepartmentRepository;
 import com.gsrs.GSRS.repository.ServiceRequestRepository;
 import com.gsrs.GSRS.repository.UserRepository;
 import com.gsrs.GSRS.service.ServiceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -61,7 +61,19 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
     }
 
     @Override
-    public Page<ServiceRequestResponseDTO> getAllRequests(Pageable pageable) {
+    public Page<ServiceRequestResponseDTO> getAllRequests(UUID callerId, String callerRole, Pageable pageable) {
+        if ("ROLE_DEPARTMENT_STAFF".equals(callerRole)) {
+            User staff = userRepository.findById(callerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+            if (staff.getDepartment() == null) {
+                return new PageImpl<>(List.of(), pageable, 0);
+            }
+
+            return serviceRequestRepository.findByDepartmentId(staff.getDepartment().getId(), pageable)
+                    .map(this::mapToDTO);
+        }
+
         return serviceRequestRepository.findAll(pageable)
                 .map(this::mapToDTO);
     }

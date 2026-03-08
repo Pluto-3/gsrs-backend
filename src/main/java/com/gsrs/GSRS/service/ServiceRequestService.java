@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ServiceRequestService {
     ServiceRequestResponseDTO createRequest(UUID citizenId, CreateServiceRequestDTO dto);
-    Page<ServiceRequestResponseDTO> getAllRequests(Pageable pageable);
+    Page<ServiceRequestResponseDTO> getAllRequests(UUID callerId, String callerRole, Pageable pageable);
     List<ServiceRequestResponseDTO> getCitizenRequests(UUID citizenId);
     ServiceRequestResponseDTO updateRequestStatus(UUID requestId, UpdateRequestStatusDTO dto);
 }

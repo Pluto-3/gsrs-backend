@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class RegisterRequestDTO {
@@ -22,4 +24,6 @@ public class RegisterRequestDTO {
 
     @NotBlank(message = "Role is required")
     private String role;
+
+    private UUID departmentId;
 }
