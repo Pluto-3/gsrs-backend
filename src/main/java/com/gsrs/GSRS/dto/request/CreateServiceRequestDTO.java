@@ -21,9 +21,8 @@ public class CreateServiceRequestDTO {
     @NotBlank(message = "Location is required")
     private String location;
 
-
     private String imageUrl;
 
-    @NotBlank(message = "Department is required")
+    @NotNull
     private UUID departmentId;
 }
